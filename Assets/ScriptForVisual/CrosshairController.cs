@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CrosshairController : MonoBehaviour
 {
@@ -6,15 +6,20 @@ public class CrosshairController : MonoBehaviour
 
     void Start()
     {
-        // Hide the default cursor
         Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Confined; // optional, keeps cursor inside window
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
     void Update()
     {
-        // Move crosshair to mouse position
-        Vector2 mousePos = Input.mousePosition;
-        crosshair.position = mousePos;
+        if (crosshair == null) return;
+
+        crosshair.position = Input.mousePosition;
+    }
+
+    // 🔥 เปิด/ปิด crosshair
+    public void SetActive(bool isActive)
+    {
+        crosshair.gameObject.SetActive(isActive);
     }
 }

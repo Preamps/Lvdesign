@@ -26,6 +26,7 @@ public class Player : Character
     public Image reloadCircle;
 
     [Header("Gun")]
+    public GameObject gunObject; // 🔥 ปืนในมือ (ตัว GameObject จริง)
     public GunAim gunAim;
     public MuzzleFlash muzzleFlash;
     public GameObject bulletPrefab;
@@ -64,6 +65,12 @@ public class Player : Character
 
         if (reloadCircle != null)
             reloadCircle.fillAmount = 0f; // hide reload circle
+        
+        if (gunObject != null)
+            gunObject.SetActive(false); // 🔥 ปิดปืนตอนเริ่ม
+
+        if (gunAim != null)
+            gunAim.enabled = false; // 🔥 ปิดระบบเล็ง
     }
 
     void Update()
@@ -80,16 +87,22 @@ public class Player : Character
             spriteRenderer.flipX = true;
 
         // --- Auto reload ---
-        if (currentAmmo <= 0 && !isReloading)
+        if (Input.GetKeyDown(KeyCode.R) && currentAmmo < maxAmmo && !isReloading)
+        {
+            Debug.Log("Press R"); // 🔥 ใส่เช็ค
             StartCoroutine(Reload());
+        }
 
         // --- Shoot ---
         if (Input.GetMouseButtonDown(0) && !isReloading)
             Shoot();
 
         // --- Manual reload ---
-        if (Input.GetKeyDown(KeyCode.R) && currentAmmo < maxAmmo && !isReloading)
-            StartCoroutine(Reload());
+        if (SoundManager.Instance != null)
+        {
+            SoundManager.Instance.PlaySFX("Reload");
+        }
+                
     }
 
     void FixedUpdate()
@@ -118,6 +131,15 @@ public class Player : Character
 
     void Shoot()
     {
+        if (gunObject == null || !gunObject.activeSelf)
+            return; // 🔥 ยังไม่มีปืน ห้ามยิง
+
+        if (currentAmmo <= 0)
+        {
+            StartCoroutine(Reload());
+            return;
+        }
+
         if (currentAmmo <= 0)
         {
             StartCoroutine(Reload());
@@ -126,7 +148,7 @@ public class Player : Character
 
         currentAmmo--;
         UpdateAmmoUI();
-        SoundManager.Instance.PlaySFX("GunShot");
+        //SoundManager.Instance.PlaySFX("GunShot");
 
         // --- Camera shake ---
         if (mainCamera != null)
@@ -157,18 +179,26 @@ public class Player : Character
 
     IEnumerator Reload()
     {
+        Debug.Log("Reload Start");
+
         isReloading = true;
+
         if (ammoText != null) ammoText.enabled = false;
         if (reloadCircle != null) reloadCircle.fillAmount = 0f;
 
-        SoundManager.Instance.PlaySFX("Reload");
+        // 🔥 กันพัง
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlaySFX("Reload");
 
         float elapsed = 0f;
+
         while (elapsed < reloadTime)
         {
             elapsed += Time.deltaTime;
+
             if (reloadCircle != null)
                 reloadCircle.fillAmount = Mathf.Clamp01(elapsed / reloadTime);
+
             yield return null;
         }
 
@@ -180,6 +210,8 @@ public class Player : Character
 
         if (reloadCircle != null)
             reloadCircle.fillAmount = 0f;
+
+        Debug.Log("Reload Done");
     }
 
     void UpdateAmmoUI()
@@ -204,6 +236,17 @@ public class Player : Character
         {
             Debug.LogWarning("Player Died! แต่หา WaveManager ไม่เจอ (Null)");
         }
+    }
+
+    public void EnableGun()
+    {
+        if (gunObject != null)
+            gunObject.SetActive(true);
+
+        if (gunAim != null)
+            gunAim.enabled = true;
+
+        Debug.Log("Gun Enabled!");
     }
 
 
