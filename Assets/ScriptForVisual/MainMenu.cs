@@ -8,7 +8,7 @@ public class MainMenu : MonoBehaviour
         // ตั้ง flag ว่าเป็นเกมใหม่ → Wave 1
         PlayerPrefs.SetInt("StartNewGame", 1);
 
-        StartCoroutine(SceneFader.Instance.FadeOut("GamePlay"));
+        StartCoroutine(SceneFader.Instance.FadeOut("Room1"));
     }
 
     public void ExitGame()
