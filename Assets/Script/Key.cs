@@ -6,13 +6,8 @@ public class Key : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Inventory inv = other.GetComponent<Inventory>();
-
-            if (inv != null)
-            {
-                inv.AddKey();
-                Destroy(gameObject);
-            }
+            GameManager.Instance.AddKey();
+            Destroy(gameObject);
         }
     }
 }
