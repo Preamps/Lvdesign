@@ -63,14 +63,18 @@ public class Player : Character
         currentAmmo = maxAmmo;
         UpdateAmmoUI();
 
-        if (reloadCircle != null)
-            reloadCircle.fillAmount = 0f; // hide reload circle
-        
-        if (gunObject != null)
-            gunObject.SetActive(false); // 🔥 ปิดปืนตอนเริ่ม
+        if (GameManager.Instance != null && GameManager.Instance.HasGun())
+        {
+            EnableGun(); // 🔥 ถ้ามีปืนอยู่แล้ว → เปิดทันที
+        }
+        else
+        {
+            if (gunObject != null)
+                gunObject.SetActive(false);
 
-        if (gunAim != null)
-            gunAim.enabled = false; // 🔥 ปิดระบบเล็ง
+            if (gunAim != null)
+                gunAim.enabled = false;
+        }
     }
 
     void Update()

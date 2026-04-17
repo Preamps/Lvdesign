@@ -6,28 +6,29 @@ public class Door : MonoBehaviour
     [SerializeField] public string nextSceneName;
     [SerializeField] public string doorID;
 
-    [SerializeField]public bool requireKey = true; // ✅ ติ๊กเปิด/ปิดการใช้กุญแจ
+    [SerializeField] public bool requireKey = true;
+    [SerializeField] private string requiredKeyID; // 🔥 เพิ่ม
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
 
-        // ✅ ถ้า "ไม่ต้องใช้กุญแจ" → เข้าได้เลย
+        // ❌ ไม่ใช้กุญแจ
         if (!requireKey)
         {
             SceneManager.LoadScene(nextSceneName);
             return;
         }
 
-        // ✅ ถ้าเคยปลดล็อกแล้ว
+        // ✅ เคยปลดล็อกแล้ว
         if (GameManager.Instance.IsDoorUnlocked(doorID))
         {
             SceneManager.LoadScene(nextSceneName);
             return;
         }
 
-        // 🔑 เช็คกุญแจ
-        if (GameManager.Instance.HasKey())
+        // 🔑 เช็คกุญแจ "เฉพาะดอก"
+        if (GameManager.Instance.HasKey(requiredKeyID))
         {
             GameManager.Instance.UnlockDoor(doorID);
             Debug.Log("ปลดล็อกประตูแล้ว!");
@@ -36,7 +37,7 @@ public class Door : MonoBehaviour
         }
         else
         {
-            Debug.Log("ต้องมีกุญแจก่อน!");
+            Debug.Log("ต้องใช้กุญแจ: " + requiredKeyID);
         }
     }
 }

@@ -5,17 +5,17 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
-    private bool hasKey = false;
-
-    // เก็บสถานะประตู (แต่ละบาน)
+    private HashSet<string> keys = new HashSet<string>(); // 🔑 หลายดอก
     private HashSet<string> unlockedDoors = new HashSet<string>();
+
+    private bool hasGun = false; // 🔫 เพิ่มตรงนี้
 
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // ✅ ข้าม scene แล้วไม่หาย
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -24,15 +24,27 @@ public class GameManager : MonoBehaviour
     }
 
     // 🔑 KEY
-    public void AddKey()
+    public void AddKey(string keyID)
     {
-        hasKey = true;
-        Debug.Log("เก็บกุญแจแล้ว!");
+        keys.Add(keyID);
+        Debug.Log("เก็บกุญแจ: " + keyID);
     }
 
-    public bool HasKey()
+    public bool HasKey(string keyID)
     {
-        return hasKey;
+        return keys.Contains(keyID);
+    }
+
+    // 🔫 GUN
+    public void AddGun()
+    {
+        hasGun = true;
+        Debug.Log("เก็บปืนแล้ว!");
+    }
+
+    public bool HasGun()
+    {
+        return hasGun;
     }
 
     // 🚪 DOOR
