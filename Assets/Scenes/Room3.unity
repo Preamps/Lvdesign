@@ -11497,7 +11497,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0.128, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1233262889
@@ -18777,8 +18777,12 @@ PrefabInstance:
       value: Room4
       objectReference: {fileID: 0}
     - target: {fileID: 1274231549787779338, guid: ca02dd5c0db6a3041a567b35ec89ae34, type: 3}
+      propertyPath: requireKey
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1274231549787779338, guid: ca02dd5c0db6a3041a567b35ec89ae34, type: 3}
       propertyPath: nextSceneName
-      value: Room4
+      value: Room6
       objectReference: {fileID: 0}
     - target: {fileID: 1274231549787779338, guid: ca02dd5c0db6a3041a567b35ec89ae34, type: 3}
       propertyPath: requiredKeyID
