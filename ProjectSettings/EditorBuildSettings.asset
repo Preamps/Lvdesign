@@ -24,6 +24,21 @@ EditorBuildSettings:
     path: Assets/Scenes/Room5.unity
     guid: f66fe25f75a227947afc449a25fc8ccc
   - enabled: 1
+    path: Assets/Scenes/Room5.1.unity
+    guid: 3008960a81243904b9aa5d2d24ced681
+  - enabled: 1
+    path: Assets/Scenes/Room5.2.unity
+    guid: 9087186219573e441b40235277769418
+  - enabled: 1
+    path: Assets/Scenes/Room5.3.unity
+    guid: d5040ea470628bf449c3b4394792b1f3
+  - enabled: 1
+    path: Assets/Scenes/Room5.4.unity
+    guid: 932edf1437f554d4d8b582c4b25503c7
+  - enabled: 1
+    path: Assets/Scenes/Room5.5.unity
+    guid: 447855bcf5c472b479fe0969f42fd079
+  - enabled: 1
     path: Assets/Scenes/Room6.unity
     guid: c7ddb7fedf59c5747b766d706757ef50
   - enabled: 1
