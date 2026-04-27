@@ -29,6 +29,7 @@ public class SoundManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            EnsureAudioSources();
             LoadClips();
             SetupSFXPool();
             SetMusicVolume(musicVolume);
@@ -37,6 +38,29 @@ public class SoundManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void EnsureAudioSources()
+    {
+        if (musicSource == null)
+        {
+            musicSource = gameObject.GetComponent<AudioSource>();
+            if (musicSource == null)
+                musicSource = gameObject.AddComponent<AudioSource>();
+
+            musicSource.playOnAwake = false;
+            musicSource.loop = true;
+        }
+
+        if (sfxSourcePrefab == null)
+        {
+            GameObject template = new GameObject("SFXSourceTemplate");
+            template.transform.SetParent(transform, false);
+
+            sfxSourcePrefab = template.AddComponent<AudioSource>();
+            sfxSourcePrefab.playOnAwake = false;
+            sfxSourcePrefab.spatialBlend = 0f;
         }
     }
 
@@ -53,6 +77,9 @@ public class SoundManager : MonoBehaviour
 
     private void SetupSFXPool()
     {
+        if (sfxPoolSize <= 0)
+            sfxPoolSize = 1;
+
         for (int i = 0; i < sfxPoolSize; i++)
         {
             AudioSource source = Instantiate(sfxSourcePrefab, transform);
@@ -60,11 +87,20 @@ public class SoundManager : MonoBehaviour
             source.volume = sfxVolume;
             sfxSources.Add(source);
         }
+
+        if (sfxSourcePrefab != null && sfxSourcePrefab.gameObject.name == "SFXSourceTemplate")
+            sfxSourcePrefab.gameObject.SetActive(false);
     }
 
     // --- Music ---
     public void PlayMusic(string clipName, bool loop = true)
     {
+        if (musicSource == null)
+        {
+            Debug.LogWarning("Music source is missing.");
+            return;
+        }
+
         if (musicDict.TryGetValue(clipName, out AudioClip clip))
         {
             if (musicSource.clip == clip && musicSource.isPlaying) return;
@@ -95,6 +131,15 @@ public class SoundManager : MonoBehaviour
     // --- SFX ---
     public void PlaySFX(string clipName, float volume = 1f, float pitch = 1f)
     {
+        if (sfxSources.Count == 0)
+            SetupSFXPool();
+
+        if (sfxSources.Count == 0)
+        {
+            Debug.LogWarning("No SFX sources available.");
+            return;
+        }
+
         if (sfxDict.TryGetValue(clipName, out AudioClip clip))
         {
             AudioSource source = sfxSources[currentSFXIndex];

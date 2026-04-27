@@ -12,12 +12,12 @@ public class HpSpawner : MonoBehaviour
 
     public int maxItems = 15;   // ⭐ จำนวนสูงสุดของ item ในซีน
     public int spawnCount = 5;
-    // เรียกได้จาก WaveManager หรือเรียกเองก็ได้
+    // เรียกจากสคริปต์อื่นหรือเรียกเองก็ได้
     private void Start()
     {
         StartCoroutine(SpawnLoop());
     }
-    
+
     IEnumerator SpawnLoop()
     {
         while (true)

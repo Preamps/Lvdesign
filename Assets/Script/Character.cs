@@ -12,12 +12,18 @@ public class Character : MonoBehaviour
     public DeathUIManager deathUIManager;   // assign in Inspector
 
     [SerializeField] private int health;
+    [SerializeField] private int maxHealth = 100;
+
     public int Health
     {
         get { return health; }
         set
         {
-            health = value;
+            health = Mathf.Clamp(value, 0, maxHealth);
+
+            if (isPlayer && GameManager.Instance != null)
+                GameManager.Instance.SetPlayerHealth(health);
+
             // Update health bar if assigned
             if (uiHealthBarrrrrr != null)
                 uiHealthBarrrrrr.UpdateHealthBar(health);
@@ -54,9 +60,6 @@ public class Character : MonoBehaviour
             }
             else // ????????????
             {
-                WaveManager.EnemyDeath notifier = GetComponent<WaveManager.EnemyDeath>();
-                if (notifier != null)
-                    notifier.OnDeath();
             }
 
             if (SoundManager.Instance != null)
@@ -93,11 +96,17 @@ public class Character : MonoBehaviour
     }
     public void Init(int newHealth)
     {
+        if (!isPlayer)
+            maxHealth = Mathf.Max(1, newHealth);
+
         Health = newHealth;
         rb = GetComponent<Rigidbody2D>();
         //anim = GetComponent<Animator>();
         if (uiHealthBarrrrrr != null)
-            uiHealthBarrrrrr.SetMaxHealth(newHealth);
+        {
+            uiHealthBarrrrrr.SetMaxHealth(maxHealth);
+            uiHealthBarrrrrr.UpdateHealthBar(health);
+        }
 
 
     }

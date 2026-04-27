@@ -18,5 +18,7 @@ public class Key : MonoBehaviour
 
         GameManager.Instance.AddKey(keyID);
         Destroy(gameObject);
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlaySFX("GetKey");
     }
 }

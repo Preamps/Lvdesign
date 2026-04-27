@@ -11397,6 +11397,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: daf7656b2a7d9724c850ccbf029d3a59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  defaultPlayerHealth: 100
 --- !u!4 &1496677059
 Transform:
   m_ObjectHideFlags: 0
@@ -11762,8 +11763,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: a2a1ededb90b56a4db61c9eb18e3492e, type: 3}
   - {fileID: 8300000, guid: 7c68f0262d87b76409d31882c9917a47, type: 3}
   - {fileID: 8300000, guid: dbcfa2e6921417e45bb3520b25df9344, type: 3}
-  musicVolume: 0.099
-  sfxVolume: 0.702
+  - {fileID: 8300000, guid: ae0d119d9277af64587c1ee2e05ad06d, type: 3}
+  - {fileID: 8300000, guid: 376eec7eab727f04ab185883bb3ae8f5, type: 3}
+  - {fileID: 8300000, guid: 1b2f085344fbb8b478563f94305800c0, type: 3}
+  musicVolume: 0.08
+  sfxVolume: 0.504
 --- !u!4 &1796905677
 Transform:
   m_ObjectHideFlags: 0

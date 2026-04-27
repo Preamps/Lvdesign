@@ -30,11 +30,11 @@ public class DeathUIManager : MonoBehaviour
     {
         Time.timeScale = 1f;
 
-        // บอกว่าเป็นการ restart → ให้โหลด wave เดิม
-        PlayerPrefs.SetInt("StartNewGame", 0);
-
-        int savedWave = WaveSaveManager.LoadWave();
-        Debug.Log("Restarting... Saved Wave = " + savedWave);
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.SaveKeys();
+            GameManager.Instance.ResetPlayerHealthToDefault();
+        }
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
@@ -42,6 +42,12 @@ public class DeathUIManager : MonoBehaviour
     public void MainMenu()
     {
         Time.timeScale = 1f;
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ResetPlayerHealthToDefault();
+        }
+
         SceneManager.LoadScene("MainMenu"); // change to your menu scene name
     }
 }

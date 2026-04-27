@@ -33,32 +33,32 @@ public class Player : Character
     public Transform firePoint;
     public float bulletSpeed = 10f;
 
+    [Header("Lighting")]
+    public bool enableDarknessMode = true;
+
     // Private movement helpers
     private Vector2 movement;
     private Vector2 currentVelocity;
     private Vector2 velocitySmoothing;
 
-    public WaveManager waveManager;
     private bool _alreadyDead = false;
-
-    void Awake()
-    {
-        // ถ้าใน Inspector ลืมลากใส่ ให้มันหาเองในฉาก
-        if (waveManager == null)
-        {
-            waveManager = GameObject.FindObjectOfType<WaveManager>();
-        }
-    }
 
     void Start()
     {
+        if (enableDarknessMode && GetComponent<PlayerDarknessLight>() == null)
+            gameObject.AddComponent<PlayerDarknessLight>();
+
         if (spriteRenderer == null)
-        spriteRenderer = GetComponent<SpriteRenderer>();
+            spriteRenderer = GetComponent<SpriteRenderer>();
 
         if (playerSprite != null)
             spriteRenderer.sprite = playerSprite;
 
-        Init(100); // From Character
+        int initialHealth = 100;
+        if (GameManager.Instance != null)
+            initialHealth = GameManager.Instance.GetPlayerHealthOrDefault();
+
+        Init(initialHealth); // From Character
 
         currentAmmo = maxAmmo;
         UpdateAmmoUI();
@@ -101,12 +101,6 @@ public class Player : Character
         if (Input.GetMouseButtonDown(0) && !isReloading)
             Shoot();
 
-        // --- Manual reload ---
-        if (SoundManager.Instance != null)
-        {
-            SoundManager.Instance.PlaySFX("Reload");
-        }
-                
     }
 
     void FixedUpdate()
@@ -144,15 +138,10 @@ public class Player : Character
             return;
         }
 
-        if (currentAmmo <= 0)
-        {
-            StartCoroutine(Reload());
-            return;
-        }
-
         currentAmmo--;
         UpdateAmmoUI();
-        //SoundManager.Instance.PlaySFX("GunShot");
+        if (SoundManager.Instance != null)
+            SoundManager.Instance.PlaySFX("GunShot");
 
         // --- Camera shake ---
         if (mainCamera != null)
@@ -228,18 +217,7 @@ public class Player : Character
         if (_alreadyDead) return;
         _alreadyDead = true;
 
-        if (waveManager != null)
-        {
-            // 🔹 สั่งบวกเลขการตายสะสม และส่ง Analytics
-            waveManager.RegisterDeath();
-
-            // ย้ายเข้ามาข้างในนี้ เพราะถ้า waveManager เป็น Null บรรทัดนี้จะ Error ทันที
-            Debug.Log("<color=red>Player Died!</color> Current Wave: " + waveManager.GetCurrentWave());
-        }
-        else
-        {
-            Debug.LogWarning("Player Died! แต่หา WaveManager ไม่เจอ (Null)");
-        }
+        Debug.Log("<color=red>Player Died!</color>");
     }
 
     public void EnableGun()

@@ -5,8 +5,16 @@ public class MainMenu : MonoBehaviour
 {
     public void StartGame()
     {
-        // ตั้ง flag ว่าเป็นเกมใหม่ → Wave 1
-        PlayerPrefs.SetInt("StartNewGame", 1);
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ClearKeys();
+            GameManager.Instance.ResetPlayerHealthToDefault();
+        }
+        else
+        {
+            PlayerPrefs.DeleteKey("PlayerKeys");
+            PlayerPrefs.Save();
+        }
 
         StartCoroutine(SceneFader.Instance.FadeOut("Room1"));
     }
