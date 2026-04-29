@@ -8,11 +8,13 @@ public class MainMenu : MonoBehaviour
         if (GameManager.Instance != null)
         {
             GameManager.Instance.ClearKeys();
+            GameManager.Instance.ClearSeenDialogues();
             GameManager.Instance.ResetPlayerHealthToDefault();
         }
         else
         {
             PlayerPrefs.DeleteKey("PlayerKeys");
+            PlayerPrefs.DeleteKey("SeenDialogues");
             PlayerPrefs.Save();
         }
 

@@ -6,8 +6,10 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     private const string KeysPrefsKey = "PlayerKeys";
+    private const string SeenDialoguePrefsKey = "SeenDialogues";
 
     private HashSet<string> keys = new HashSet<string>(); // 🔑 หลายดอก
+    private HashSet<string> seenDialogues = new HashSet<string>();
     private HashSet<string> unlockedDoors = new HashSet<string>();
 
     private bool hasGun = false; // 🔫 เพิ่มตรงนี้
@@ -16,6 +18,8 @@ public class GameManager : MonoBehaviour
 
     private string pendingSpawnDoorID;
     private float blockDoorTriggerUntil;
+    
+    public int currentFuses = 0; //ขันโตกเพิ่มมาระบบเก็บ Fuse
 
     private void Awake()
     {
@@ -24,7 +28,9 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             LoadSavedKeys();
+            LoadSeenDialogues();
             SceneManager.sceneLoaded += OnSceneLoaded;
+            
         }
         else
         {
@@ -68,6 +74,55 @@ public class GameManager : MonoBehaviour
         keys.Clear();
         PlayerPrefs.DeleteKey(KeysPrefsKey);
         PlayerPrefs.Save();
+    }
+
+    public void ClearSeenDialogues()
+    {
+        seenDialogues.Clear();
+        PlayerPrefs.DeleteKey(SeenDialoguePrefsKey);
+        PlayerPrefs.Save();
+    }
+
+    // 💬 DIALOGUE
+    public void MarkDialogueSeen(string dialogueID)
+    {
+        if (string.IsNullOrEmpty(dialogueID)) return;
+
+        seenDialogues.Add(dialogueID);
+        SaveSeenDialogues();
+    }
+
+    public bool HasSeenDialogue(string dialogueID)
+    {
+        return !string.IsNullOrEmpty(dialogueID) && seenDialogues.Contains(dialogueID);
+    }
+
+    private void SaveSeenDialogues()
+    {
+        string[] allDialogues = new string[seenDialogues.Count];
+        seenDialogues.CopyTo(allDialogues);
+
+        string serializedDialogues = string.Join("|", allDialogues);
+        PlayerPrefs.SetString(SeenDialoguePrefsKey, serializedDialogues);
+        PlayerPrefs.Save();
+    }
+
+    private void LoadSeenDialogues()
+    {
+        if (!PlayerPrefs.HasKey(SeenDialoguePrefsKey)) return;
+
+        string serializedDialogues = PlayerPrefs.GetString(SeenDialoguePrefsKey, string.Empty);
+        if (string.IsNullOrEmpty(serializedDialogues)) return;
+
+        string[] loadedDialogues = serializedDialogues.Split('|');
+        for (int i = 0; i < loadedDialogues.Length; i++)
+        {
+            string dialogueID = loadedDialogues[i];
+            if (!string.IsNullOrEmpty(dialogueID))
+            {
+                seenDialogues.Add(dialogueID);
+            }
+        }
     }
 
     private void LoadSavedKeys()
@@ -170,5 +225,11 @@ public class GameManager : MonoBehaviour
         }
 
         pendingSpawnDoorID = null;
+    }
+    
+    public void AddFuse()
+    {
+        currentFuses++;
+        Debug.Log("Collected Fuse" + currentFuses);
     }
 }
